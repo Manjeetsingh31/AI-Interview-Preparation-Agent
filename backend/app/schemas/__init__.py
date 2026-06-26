@@ -10,6 +10,16 @@ from backend.app.schemas.resume_analysis import (
     ResumeAnalysisUpdate,
     ResumeAnalysisResponse,
 )
+from backend.app.schemas.resume_analysis_adk import (
+    Education,
+    Experience,
+    Project,
+    ResumeData,
+    ResumeAnalysisADKBase,
+    ResumeAnalysisADKCreate,
+    ResumeAnalysisADKUpdate,
+    ResumeAnalysisADKResponse,
+)
 from backend.app.schemas.interview_history import (
     InterviewHistoryBase,
     InterviewHistoryCreate,
@@ -50,6 +60,14 @@ __all__ = [
     "ResumeAnalysisCreate",
     "ResumeAnalysisUpdate",
     "ResumeAnalysisResponse",
+    "Education",
+    "Experience",
+    "Project",
+    "ResumeData",
+    "ResumeAnalysisADKBase",
+    "ResumeAnalysisADKCreate",
+    "ResumeAnalysisADKUpdate",
+    "ResumeAnalysisADKResponse",
     "InterviewHistoryBase",
     "InterviewHistoryCreate",
     "InterviewHistoryUpdate",

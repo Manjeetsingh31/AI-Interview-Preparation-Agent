@@ -16,6 +16,9 @@ from backend.app.schemas import schemas
 from backend.app.services.agents.analyzer import ResumeAnalyzer
 from backend.app.services.agents.orchestrator import InterviewOrchestrator
 
+# ADK Resume Analysis router
+from backend.app.api.resume_analysis import router as adk_resume_router
+
 # Initialize FastAPI App
 app = FastAPI(title=settings.PROJECT_NAME)
 
@@ -30,6 +33,9 @@ app.add_middleware(
 
 # Initialize Database tables
 Base.metadata.create_all(bind=engine)
+
+# Include ADK Resume Analysis router
+app.include_router(adk_resume_router)
 
 # Helper functions for Auth (using Python standard hashlib to avoid external C dependencies)
 def hash_password(password: str) -> str:
