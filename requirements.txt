@@ -1,0 +1,9 @@
+fastapi
+uvicorn[standard]
+streamlit
+google-genai>=1.0.0
+sqlalchemy
+pydantic
+python-multipart
+python-dotenv
+email-validator
