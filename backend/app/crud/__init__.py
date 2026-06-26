@@ -1,0 +1,32 @@
+from backend.app.crud.crud_user import user as user_crud
+from backend.app.crud.crud_resume import resume_analysis as resume_crud
+from backend.app.crud.crud_feedback import feedback as feedback_crud
+from backend.app.crud.crud_progress import progress as progress_crud
+from backend.app.crud.crud_interview import interview_history as interview_crud
+from backend.app.crud.crud_question import question as question_crud
+from backend.app.crud.crud_study_plan import study_plan as study_plan_crud
+
+from backend.app.crud.crud_user import CRUDUser
+from backend.app.crud.crud_resume import CRUDResumeAnalysis
+from backend.app.crud.crud_feedback import CRUDFeedback
+from backend.app.crud.crud_progress import CRUDProgress
+from backend.app.crud.crud_interview import CRUDInterviewHistory
+from backend.app.crud.crud_question import CRUDQuestion
+from backend.app.crud.crud_study_plan import CRUDStudyPlan
+
+__all__ = [
+    "user_crud",
+    "resume_crud",
+    "feedback_crud",
+    "progress_crud",
+    "interview_crud",
+    "question_crud",
+    "study_plan_crud",
+    "CRUDUser",
+    "CRUDResumeAnalysis",
+    "CRUDFeedback",
+    "CRUDProgress",
+    "CRUDInterviewHistory",
+    "CRUDQuestion",
+    "CRUDStudyPlan",
+]
