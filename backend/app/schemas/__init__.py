@@ -60,6 +60,16 @@ from backend.app.schemas.ats_score import (
     AtsScoreResponse,
     AtsAnalyzeRequest,
 )
+from backend.app.schemas.interview_question import (
+    InterviewQuestionItem,
+    InterviewQuestionList,
+    InterviewQuestionBase,
+    InterviewQuestionCreate,
+    InterviewQuestionUpdate,
+    InterviewQuestionResponse,
+    InterviewQuestionGenerateRequest,
+    InterviewQuestionGenerateResponse,
+)
 
 __all__ = [
     "UserBase",
@@ -106,4 +116,12 @@ __all__ = [
     "AtsScoreUpdate",
     "AtsScoreResponse",
     "AtsAnalyzeRequest",
+    "InterviewQuestionItem",
+    "InterviewQuestionList",
+    "InterviewQuestionBase",
+    "InterviewQuestionCreate",
+    "InterviewQuestionUpdate",
+    "InterviewQuestionResponse",
+    "InterviewQuestionGenerateRequest",
+    "InterviewQuestionGenerateResponse",
 ]

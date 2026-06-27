@@ -27,6 +27,7 @@ from sqlalchemy.orm import Session
 
 from backend.app.core.database import get_db
 from backend.app.models import models
+from backend.app.models.user import User
 from backend.app.services.file_storage import (
     FileStorageService,
     InvalidFileTypeError,
@@ -86,12 +87,12 @@ def get_current_user_id(db: Session = Depends(get_db)) -> str:
         The ``id`` (UUID string) of the authenticated user.
     """
     user = (
-        db.query(models.User)
-        .filter(models.User.email == "candidate@example.com")
+        db.query(User)
+        .filter(User.email == "candidate@example.com")
         .first()
     )
     if not user:
-        user = models.User(
+        user = User(
             email="candidate@example.com",
             password_hash=hashlib.sha256(b"password123").hexdigest(),
         )

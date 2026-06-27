@@ -2,21 +2,10 @@ import uuid
 from datetime import datetime
 from sqlalchemy import Column, String, DateTime, ForeignKey, Integer, Text, JSON
 from sqlalchemy.orm import relationship
-from backend.app.core.db import Base
+from backend.app.core.database import Base
 
 def generate_uuid():
     return str(uuid.uuid4())
-
-class User(Base):
-    __tablename__ = "users"
-
-    id = Column(String(36), primary_key=True, default=generate_uuid)
-    email = Column(String(255), unique=True, index=True, nullable=False)
-    password_hash = Column(String(255), nullable=False)
-    created_at = Column(DateTime, default=datetime.utcnow)
-
-    resumes = relationship("Resume", back_populates="user", cascade="all, delete-orphan")
-    sessions = relationship("InterviewSession", back_populates="user", cascade="all, delete-orphan")
 
 
 class Resume(Base):
@@ -26,7 +15,7 @@ class Resume(Base):
     user_id = Column(String(36), ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
     filename = Column(String(255), nullable=False)
     file_path = Column(String(512), nullable=True)
-    parsed_data = Column(JSON, nullable=True)  # Structured skills, projects, work exp
+    parsed_data = Column(JSON, nullable=True)
     uploaded_at = Column(DateTime, default=datetime.utcnow)
 
     user = relationship("User", back_populates="resumes")
@@ -41,8 +30,8 @@ class InterviewSession(Base):
     resume_id = Column(String(36), ForeignKey("resumes.id", ondelete="SET NULL"), nullable=True)
     role = Column(String(100), nullable=False)
     company = Column(String(100), nullable=True, default="Standard")
-    interview_type = Column(String(50), nullable=False)  # behavioral, coding, system_design
-    status = Column(String(50), default="active")  # active, completed
+    interview_type = Column(String(50), nullable=False)
+    status = Column(String(50), default="active")
     created_at = Column(DateTime, default=datetime.utcnow)
     completed_at = Column(DateTime, nullable=True)
 
@@ -57,7 +46,7 @@ class Transcript(Base):
 
     id = Column(String(36), primary_key=True, default=generate_uuid)
     session_id = Column(String(36), ForeignKey("interview_sessions.id", ondelete="CASCADE"), nullable=False)
-    sender = Column(String(50), nullable=False)  # candidate, interviewer
+    sender = Column(String(50), nullable=False)
     message = Column(Text, nullable=False)
     timestamp = Column(DateTime, default=datetime.utcnow)
 
@@ -69,10 +58,10 @@ class Evaluation(Base):
 
     id = Column(String(36), primary_key=True, default=generate_uuid)
     session_id = Column(String(36), ForeignKey("interview_sessions.id", ondelete="CASCADE"), unique=True, nullable=False)
-    overall_score = Column(Integer, nullable=False)  # 0 to 100
+    overall_score = Column(Integer, nullable=False)
     feedback_summary = Column(Text, nullable=False)
-    criteria_scores = Column(JSON, nullable=False)  # Detailed score breakdown
-    recommendations = Column(JSON, nullable=False)   # Concrete improvement steps
+    criteria_scores = Column(JSON, nullable=False)
+    recommendations = Column(JSON, nullable=False)
     created_at = Column(DateTime, default=datetime.utcnow)
 
     session = relationship("InterviewSession", back_populates="evaluation")

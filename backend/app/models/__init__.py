@@ -7,6 +7,8 @@ from backend.app.models.feedback import Feedback
 from backend.app.models.study_plan import StudyPlan
 from backend.app.models.progress import Progress
 from backend.app.models.ats_score import AtsScore
+from backend.app.models.interview_question import InterviewQuestion
+from backend.app.models.models import Resume, InterviewSession, Transcript, Evaluation
 
 __all__ = [
     "User",
@@ -18,4 +20,9 @@ __all__ = [
     "StudyPlan",
     "Progress",
     "AtsScore",
+    "InterviewQuestion",
+    "Resume",
+    "InterviewSession",
+    "Transcript",
+    "Evaluation",
 ]

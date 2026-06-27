@@ -22,8 +22,9 @@ from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-from backend.app.core.db import Base as DbBase
+from backend.app.core.database import Base as DbBase
 from backend.app.models import models
+from backend.app.models.user import User
 from backend.app.services.file_storage import (
     FileStorageService,
     InvalidFileTypeError,
@@ -293,7 +294,7 @@ class TestResumeUploadAPI:
 
         # --- Seed a mock user ------------------------------------------------
         session = TestSession()
-        user = models.User(
+        user = User(
             email="test_resume@example.com",
             password_hash="test_hash",
         )

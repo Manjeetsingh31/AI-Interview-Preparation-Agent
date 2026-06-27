@@ -61,6 +61,16 @@ class User(Base):
         comment="UTC timestamp of last profile update",
     )
 
+    resumes = relationship(
+        "Resume",
+        back_populates="user",
+        cascade="all, delete-orphan",
+    )
+    sessions = relationship(
+        "InterviewSession",
+        back_populates="user",
+        cascade="all, delete-orphan",
+    )
     resume_analyses = relationship(
         "ResumeAnalysis",
         back_populates="user",

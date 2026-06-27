@@ -8,8 +8,9 @@ from typing import List, Optional
 
 # Core imports
 from backend.app.core.config import settings
-from backend.app.core.db import engine, Base, get_db
+from backend.app.core.database import engine, Base, get_db, init_db
 from backend.app.models import models
+from backend.app.models.user import User
 from backend.app.schemas import schemas
 
 # Service agents
@@ -21,7 +22,9 @@ from backend.app.api.resume_analysis import router as adk_resume_router
 
 # ATS Scoring Engine router
 from backend.app.api.ats import router as ats_router
-from backend.app.core.database import init_db as init_refactored_db
+
+# Interview Question Generator router
+from backend.app.api.interview_questions import router as interview_questions_router
 
 # Initialize FastAPI App
 app = FastAPI(title=settings.PROJECT_NAME)
@@ -36,12 +39,12 @@ app.add_middleware(
 )
 
 # Initialize Database tables
-Base.metadata.create_all(bind=engine)
-init_refactored_db()
+init_db()
 
 # Include routers
 app.include_router(adk_resume_router)
 app.include_router(ats_router)
+app.include_router(interview_questions_router)
 
 # Helper functions for Auth (using Python standard hashlib to avoid external C dependencies)
 def hash_password(password: str) -> str:
@@ -54,10 +57,10 @@ def get_current_user_id(token: str = "mock-token", db: Session = Depends(get_db)
     if token.startswith("Bearer "):
         token = token.split(" ")[1]
         
-    user = db.query(models.User).filter(models.User.email == "candidate@example.com").first()
+    user = db.query(User).filter(User.email == "candidate@example.com").first()
     if not user:
         # Create default mock user
-        user = models.User(
+        user = User(
             email="candidate@example.com",
             password_hash=hash_password("password123")
         )
@@ -70,11 +73,11 @@ def get_current_user_id(token: str = "mock-token", db: Session = Depends(get_db)
 
 @app.post("/api/auth/register", response_model=schemas.UserOut)
 def register(user_data: schemas.UserCreate, db: Session = Depends(get_db)):
-    db_user = db.query(models.User).filter(models.User.email == user_data.email).first()
+    db_user = db.query(User).filter(User.email == user_data.email).first()
     if db_user:
         raise HTTPException(status_code=400, detail="Email already registered")
     
-    new_user = models.User(
+    new_user = User(
         email=user_data.email,
         password_hash=hash_password(user_data.password)
     )
@@ -85,7 +88,7 @@ def register(user_data: schemas.UserCreate, db: Session = Depends(get_db)):
 
 @app.post("/api/auth/login", response_model=schemas.Token)
 def login(user_data: schemas.UserLogin, db: Session = Depends(get_db)):
-    user = db.query(models.User).filter(models.User.email == user_data.email).first()
+    user = db.query(User).filter(User.email == user_data.email).first()
     if not user or user.password_hash != hash_password(user_data.password):
         raise HTTPException(status_code=400, detail="Incorrect email or password")
     
