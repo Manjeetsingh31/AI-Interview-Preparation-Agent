@@ -32,6 +32,9 @@ from backend.app.api.interview import router as interview_router
 # Production AI Evaluation & Feedback Agent router
 from backend.app.api.evaluation import router as evaluation_router
 
+# Production Personalized Study Plan AI Agent router
+from backend.app.api.study_plan import router as study_plan_router
+
 # Initialize FastAPI App
 app = FastAPI(title=settings.PROJECT_NAME)
 
@@ -53,6 +56,7 @@ app.include_router(ats_router)
 app.include_router(interview_questions_router)
 app.include_router(interview_router)
 app.include_router(evaluation_router)
+app.include_router(study_plan_router)
 
 # Helper functions for Auth (using Python standard hashlib to avoid external C dependencies)
 def hash_password(password: str) -> str:

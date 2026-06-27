@@ -10,6 +10,7 @@ from backend.app.models.ats_score import AtsScore
 from backend.app.models.interview_question import InterviewQuestion
 from backend.app.models.interview_turn import InterviewTurn
 from backend.app.models.interview_evaluation import InterviewEvaluation
+from backend.app.models.study_plan_ai import StudyPlanAI
 from backend.app.models.models import Resume, InterviewSession, Transcript, Evaluation
 
 __all__ = [
@@ -25,6 +26,7 @@ __all__ = [
     "InterviewQuestion",
     "InterviewTurn",
     "InterviewEvaluation",
+    "StudyPlanAI",
     "Resume",
     "InterviewSession",
     "Transcript",

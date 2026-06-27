@@ -15,6 +15,9 @@ from backend.app.crud.crud_interview_session import (
 from backend.app.crud.crud_interview_evaluation import (
     interview_evaluation_crud,
 )
+from backend.app.crud.crud_study_plan_ai import (
+    study_plan_ai_crud,
+)
 
 from backend.app.crud.crud_user import CRUDUser
 from backend.app.crud.crud_resume import CRUDResumeAnalysis
@@ -32,6 +35,9 @@ from backend.app.crud.crud_interview_session import (
 )
 from backend.app.crud.crud_interview_evaluation import (
     CRUDInterviewEvaluation,
+)
+from backend.app.crud.crud_study_plan_ai import (
+    CRUDStudyPlanAI,
 )
 
 __all__ = [
@@ -61,4 +67,6 @@ __all__ = [
     "CRUDInterviewSession",
     "interview_evaluation_crud",
     "CRUDInterviewEvaluation",
+    "study_plan_ai_crud",
+    "CRUDStudyPlanAI",
 ]
