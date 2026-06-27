@@ -6,6 +6,7 @@ from backend.app.models.question import Question
 from backend.app.models.feedback import Feedback
 from backend.app.models.study_plan import StudyPlan
 from backend.app.models.progress import Progress
+from backend.app.models.ats_score import AtsScore
 
 __all__ = [
     "User",
@@ -16,4 +17,5 @@ __all__ = [
     "Feedback",
     "StudyPlan",
     "Progress",
+    "AtsScore",
 ]

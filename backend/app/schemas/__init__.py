@@ -50,6 +50,16 @@ from backend.app.schemas.progress import (
     ProgressUpdate,
     ProgressResponse,
 )
+from backend.app.schemas.ats_score import (
+    SectionScoreDetail,
+    SkillGapAnalysis,
+    AtsOutput,
+    AtsScoreBase,
+    AtsScoreCreate,
+    AtsScoreUpdate,
+    AtsScoreResponse,
+    AtsAnalyzeRequest,
+)
 
 __all__ = [
     "UserBase",
@@ -88,4 +98,12 @@ __all__ = [
     "ProgressCreate",
     "ProgressUpdate",
     "ProgressResponse",
+    "SectionScoreDetail",
+    "SkillGapAnalysis",
+    "AtsOutput",
+    "AtsScoreBase",
+    "AtsScoreCreate",
+    "AtsScoreUpdate",
+    "AtsScoreResponse",
+    "AtsAnalyzeRequest",
 ]

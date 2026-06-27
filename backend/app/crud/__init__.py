@@ -6,6 +6,7 @@ from backend.app.crud.crud_progress import progress as progress_crud
 from backend.app.crud.crud_interview import interview_history as interview_crud
 from backend.app.crud.crud_question import question as question_crud
 from backend.app.crud.crud_study_plan import study_plan as study_plan_crud
+from backend.app.crud.crud_ats_score import ats_score_crud
 
 from backend.app.crud.crud_user import CRUDUser
 from backend.app.crud.crud_resume import CRUDResumeAnalysis
@@ -15,6 +16,7 @@ from backend.app.crud.crud_progress import CRUDProgress
 from backend.app.crud.crud_interview import CRUDInterviewHistory
 from backend.app.crud.crud_question import CRUDQuestion
 from backend.app.crud.crud_study_plan import CRUDStudyPlan
+from backend.app.crud.crud_ats_score import CRUDAtsScore
 
 __all__ = [
     "user_crud",
@@ -25,6 +27,7 @@ __all__ = [
     "interview_crud",
     "question_crud",
     "study_plan_crud",
+    "ats_score_crud",
     "CRUDUser",
     "CRUDResumeAnalysis",
     "CRUDResumeAnalysisADK",
@@ -33,4 +36,5 @@ __all__ = [
     "CRUDInterviewHistory",
     "CRUDQuestion",
     "CRUDStudyPlan",
+    "CRUDAtsScore",
 ]

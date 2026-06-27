@@ -19,6 +19,10 @@ from backend.app.services.agents.orchestrator import InterviewOrchestrator
 # ADK Resume Analysis router
 from backend.app.api.resume_analysis import router as adk_resume_router
 
+# ATS Scoring Engine router
+from backend.app.api.ats import router as ats_router
+from backend.app.core.database import init_db as init_refactored_db
+
 # Initialize FastAPI App
 app = FastAPI(title=settings.PROJECT_NAME)
 
@@ -33,9 +37,11 @@ app.add_middleware(
 
 # Initialize Database tables
 Base.metadata.create_all(bind=engine)
+init_refactored_db()
 
-# Include ADK Resume Analysis router
+# Include routers
 app.include_router(adk_resume_router)
+app.include_router(ats_router)
 
 # Helper functions for Auth (using Python standard hashlib to avoid external C dependencies)
 def hash_password(password: str) -> str:
