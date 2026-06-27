@@ -37,6 +37,7 @@ Every step is logged at ``INFO`` level for observability.
 import json
 import logging
 
+from tenacity import retry, stop_after_attempt, wait_exponential
 from google.adk import Runner
 from google.adk.agents import Agent
 from google.adk.sessions import InMemorySessionService
@@ -84,7 +85,7 @@ _session_service = InMemorySessionService()
 
 _agent = Agent(
     name=_AGENT_NAME,
-    model="gemini-2.5-flash",
+    model=settings.GEMINI_MODEL,
     instruction=_SYSTEM_INSTRUCTION,
     output_schema=ResumeData,
     generate_content_config={
@@ -115,6 +116,18 @@ class ResumeAnalysisAgent:
     def __init__(self) -> None:
         self.logger = logging.getLogger(f"{__name__}.ResumeAnalysisAgent")
 
+    @retry(
+        stop=stop_after_attempt(5),
+        wait=wait_exponential(multiplier=2),
+        reraise=True,
+    )
+    async def _run_with_retry(self, prompt: str):
+        return await _runner.run_debug(
+            user_messages=[prompt],
+            user_id=_USER_ID,
+            session_id=_SESSION_ID,
+        )
+
     async def analyze(self, resume_text: str) -> ResumeData:
         """Analyse a resume and return structured ``ResumeData``.
 
@@ -139,15 +152,12 @@ class ResumeAnalysisAgent:
         prompt = f"Analyse the following resume:\n\n{resume_text}"
 
         try:
-            events = await _runner.run_debug(
-                user_messages=[prompt],
-                user_id=_USER_ID,
-                session_id=_SESSION_ID,
-            )
+            events = await self._run_with_retry(prompt)
         except Exception as exc:
-            self.logger.error("Gemini timeout / API failure: %s", exc)
+            self.logger.exception("Gemini API failed after retries")
             raise ResumeAnalysisError(
-                f"ADK agent failed to produce a response: {exc}"
+                "Resume analysis service is temporarily unavailable. "
+                "Please try again in a few minutes."
             ) from exc
 
         # --- Extract the final structured response from events ---------------
@@ -172,13 +182,18 @@ class ResumeAnalysisAgent:
                                 parsed.full_name,
                                 parsed.email,
                             )
-                        except (json.JSONDecodeError, Exception) as exc:
-                            self.logger.error(
-                                "Malformed JSON from Gemini: %s", exc
-                            )
+                        except json.JSONDecodeError as exc:
+                            self.logger.error("Malformed JSON from Gemini: %s", exc)
                             raise ResumeAnalysisError(
                                 f"Failed to parse Gemini response: {exc}"
                             ) from exc
+
+                        except Exception as exc:
+                            self.logger.exception("Unexpected error while parsing Gemini response")
+                            raise ResumeAnalysisError(
+                                "Unexpected error while processing the Gemini response."
+                            ) from exc
+
 
         if parsed is None:
             self.logger.error(
