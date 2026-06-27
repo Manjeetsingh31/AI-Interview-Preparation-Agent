@@ -18,6 +18,7 @@ Build an intelligent AI Interview Assistant that helps students and job seekers 
 - 🤝 HR Interview Agent
 - 💻 Technical Interview Agent
 - 🧠 DSA Interview Agent
+- 🎯 Mock Interview Multi-Agent System (Google ADK + Gemini 2.5 Flash)
 - 📊 AI Feedback Agent
 - 📅 Personalized Study Planner
 - 🔄 Multi-Agent Workflow using Google ADK
@@ -47,12 +48,9 @@ Build an intelligent AI Interview Assistant that helps students and job seekers 
 - ✅ Resume Analysis Agent (ADK + Gemini)
 - ✅ ATS Scoring Engine
 - ✅ Interview Question Generator Agent
-- ⏳ HR Agent
-- ⏳ Technical Agent
-- ⏳ DSA Agent
+- ✅ Mock Interview Multi-Agent System
 - ⏳ Feedback Agent
 - ⏳ Study Planner
-- ⏳ FastAPI Backend (in progress)
 - ⏳ Streamlit Frontend
 - ⏳ Testing & Deployment
 
@@ -86,6 +84,17 @@ Build an intelligent AI Interview Assistant that helps students and job seekers 
 |--------|----------------------|--------------------------|
 | POST   | /api/auth/register   | Register a new user      |
 | POST   | /api/auth/login      | Login and get a token    |
+
+### Mock Interview (Production Multi-Agent System)
+
+| Method | Endpoint                             | Description                                      |
+|--------|--------------------------------------|--------------------------------------------------|
+| POST   | /api/interview/start                 | Start a new interview session (generates Q1)     |
+| POST   | /api/interview/answer                | Submit answer, get next question + evaluation     |
+| POST   | /api/interview/end                   | End an active interview session                   |
+| GET    | /api/interview/{session_id}          | Get all turns for a session                       |
+| GET    | /api/interview/history               | List interview turn history for the current user  |
+| GET    | /api/interview/transcript/{session_id}| Get full conversation transcript                  |
 
 ### Sessions
 
@@ -144,6 +153,74 @@ POST /api/interview/questions/generate
 - Questions progress from easier to harder
 - Each question includes hints, expected answer, follow-up, and tags
 - No duplicate questions
+
+## 🎯 Mock Interview Multi-Agent System
+
+The Production Mock Interview Multi-Agent System conducts a complete interview exactly like a real interviewer using **Google ADK + Gemini 2.5 Flash**.
+
+### Supported Interview Types
+
+- **HR** — Cultural fit, motivation, career goals, teamwork
+- **Technical** — System design, architecture, technology choices
+- **Coding** — Algorithms, data structures, code quality, problem-solving
+- **Behavioural** — Past experiences, leadership, conflict resolution
+- **Mixed** — Blend of all types as appropriate
+
+### Architecture
+
+```
+Client ──POST/GET──► FastAPI Route ──► ADK Agent ──► Gemini 2.5 Flash
+                          │                         │
+                          ▼                         ▼
+                    Database                    Structured Turn
+                 (ResumeADK, ATS,          (InterviewAgentTurn)
+                  InterviewTurn)
+                          │
+                          ▼
+                    JSON Response
+```
+
+### Interview Flow
+
+1. **POST /api/interview/start** — Loads resume analysis, ATS analysis, and generated questions; creates a session; generates the first question
+2. **POST /api/interview/answer** — Submits the candidate's answer; agent evaluates and scores it; generates the next question or follow-up; maintains conversation memory
+3. The cycle repeats until the configured number of questions is asked
+4. **POST /api/interview/end** — Ends the session and returns the transcript summary
+
+### Key Features
+
+- **Adaptive questioning** based on resume, ATS weaknesses, skills, projects, education, previous answers, previous questions, difficulty level, company, and job role
+- **Intelligent follow-up logic**: weak answer → clarification; strong answer → deeper question; partial answer → one follow-up
+- **Difficulty progression**: increases every 3-4 correct answers, decreases if score < 40
+- **Category switching**: never asks two same-category questions consecutively
+- **Conversation memory**: maintains full context across all turns
+- **Never repeats questions**
+
+### Supported Companies
+
+Generic, Google, Microsoft, Amazon, Meta, Apple, Netflix, Oracle, IBM, Adobe, TCS, Infosys, Wipro, Accenture, Capgemini, Deloitte, Cognizant
+
+### Database Schema
+
+**interview_turns** table:
+| Column | Type | Description |
+|--------|------|-------------|
+| id | UUID PK | Primary key |
+| session_id | FK → interview_sessions | Parent session |
+| user_id | FK → users | Candidate |
+| resume_analysis_id | FK → resume_analyses_adk | Resume context |
+| question_number | Integer | Sequential Q number |
+| question | Text | Interview question |
+| candidate_answer | Text | Candidate's answer |
+| follow_up | Text | Follow-up question |
+| difficulty | String | Easy / Medium / Hard |
+| category | String | HR / Technical / Coding / Behavioural |
+| tags | JSON | Keyword tags |
+| expected_answer | Text | Ideal answer |
+| evaluation | Text | AI evaluation |
+| score | Integer | Score 0-100 |
+| response_time | Integer | Seconds taken |
+| created_at | DateTime | UTC timestamp |
 
 ## 🏆 Kaggle Capstone
 

@@ -26,6 +26,12 @@ from backend.app.api.ats import router as ats_router
 # Interview Question Generator router
 from backend.app.api.interview_questions import router as interview_questions_router
 
+# Mock Interview Multi-Agent System router
+from backend.app.api.interview import router as interview_router
+
+# Production AI Evaluation & Feedback Agent router
+from backend.app.api.evaluation import router as evaluation_router
+
 # Initialize FastAPI App
 app = FastAPI(title=settings.PROJECT_NAME)
 
@@ -45,6 +51,8 @@ init_db()
 app.include_router(adk_resume_router)
 app.include_router(ats_router)
 app.include_router(interview_questions_router)
+app.include_router(interview_router)
+app.include_router(evaluation_router)
 
 # Helper functions for Auth (using Python standard hashlib to avoid external C dependencies)
 def hash_password(password: str) -> str:

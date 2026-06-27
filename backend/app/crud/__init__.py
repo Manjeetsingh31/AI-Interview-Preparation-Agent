@@ -8,6 +8,13 @@ from backend.app.crud.crud_question import question as question_crud
 from backend.app.crud.crud_study_plan import study_plan as study_plan_crud
 from backend.app.crud.crud_ats_score import ats_score_crud
 from backend.app.crud.crud_interview_question import interview_question as interview_question_crud
+from backend.app.crud.crud_interview_turn import interview_turn_crud
+from backend.app.crud.crud_interview_session import (
+    interview_session_crud,
+)
+from backend.app.crud.crud_interview_evaluation import (
+    interview_evaluation_crud,
+)
 
 from backend.app.crud.crud_user import CRUDUser
 from backend.app.crud.crud_resume import CRUDResumeAnalysis
@@ -19,6 +26,13 @@ from backend.app.crud.crud_question import CRUDQuestion
 from backend.app.crud.crud_study_plan import CRUDStudyPlan
 from backend.app.crud.crud_ats_score import CRUDAtsScore
 from backend.app.crud.crud_interview_question import CRUDInterviewQuestion
+from backend.app.crud.crud_interview_turn import CRUDInterviewTurn
+from backend.app.crud.crud_interview_session import (
+    CRUDInterviewSession,
+)
+from backend.app.crud.crud_interview_evaluation import (
+    CRUDInterviewEvaluation,
+)
 
 __all__ = [
     "user_crud",
@@ -41,4 +55,10 @@ __all__ = [
     "CRUDStudyPlan",
     "CRUDAtsScore",
     "CRUDInterviewQuestion",
+    "interview_turn_crud",
+    "CRUDInterviewTurn",
+    "interview_session_crud",
+    "CRUDInterviewSession",
+    "interview_evaluation_crud",
+    "CRUDInterviewEvaluation",
 ]
