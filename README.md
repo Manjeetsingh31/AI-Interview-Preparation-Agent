@@ -49,9 +49,10 @@ Build an intelligent AI Interview Assistant that helps students and job seekers 
 - ✅ ATS Scoring Engine
 - ✅ Interview Question Generator Agent
 - ✅ Mock Interview Multi-Agent System
-- ⏳ Feedback Agent
-- ⏳ Study Planner
-- ⏳ Streamlit Frontend
+- ✅ Evaluation & Feedback Agent
+- ✅ Personalized Study Plan Agent
+- ✅ Analytics Dashboard
+- ✅ Streamlit Frontend (9 pages)
 - ⏳ Testing & Deployment
 
 ## 📡 API Endpoints
@@ -221,6 +222,76 @@ Generic, Google, Microsoft, Amazon, Meta, Apple, Netflix, Oracle, IBM, Adobe, TC
 | score | Integer | Score 0-100 |
 | response_time | Integer | Seconds taken |
 | created_at | DateTime | UTC timestamp |
+
+## 🎨 Streamlit Frontend
+
+The frontend is a multi-page Streamlit application in the `frontend/` directory.
+
+### Setup
+
+```bash
+cd frontend
+pip install -r requirements.txt
+```
+
+### Running
+
+Start the backend first, then:
+
+```bash
+cd frontend
+streamlit run app.py
+```
+
+### Pages
+
+| # | Page | Description |
+|---|------|-------------|
+| 1 | Login | Email/password login and registration |
+| 2 | Dashboard | Overview with stats, quick actions, study progress |
+| 3 | Resume | Upload PDF/TXT, analyze, view extracted data |
+| 4 | ATS | Run ATS analysis, view scores, sections, suggestions |
+| 5 | Interview Questions | Generate tailored questions with filters |
+| 6 | Mock Interview | Real-time chat interface with timer and scoring |
+| 7 | Evaluation | Generate and view interview evaluations |
+| 8 | Study Plan | Generate 7/15/30/60-day plans, track progress |
+| 9 | Analytics | Charts, readiness score, timeline, skill analysis |
+
+### Structure
+
+```
+frontend/
+├── app.py                      # Main entry point with routing
+├── pages/
+│   ├── 1_Login.py              # Authentication (login/register)
+│   ├── 2_Dashboard.py          # Dashboard overview
+│   ├── 3_Resume.py             # Resume upload & analysis
+│   ├── 4_ATS.py                # ATS scoring & display
+│   ├── 5_Interview_Questions.py# Question generation
+│   ├── 6_Mock_Interview.py     # Interactive mock interview
+│   ├── 7_Evaluation.py         # Interview evaluation
+│   ├── 8_Study_Plan.py         # Study plan generation
+│   └── 9_Analytics.py          # Full analytics dashboard
+├── components/
+│   ├── sidebar.py              # Reusable sidebar navigation
+│   ├── cards.py                # Stat cards, tags, progress bars
+│   └── charts.py               # Plotly charts (radar, bar, pie, line, gauge)
+├── utils/
+│   ├── api.py                  # API client (all 40+ endpoints)
+│   ├── constants.py            # Theme, config, constants
+│   ├── session.py              # Session state management
+│   └── styles.py               # CSS and HTML components
+├── assets/
+│   └── style.css               # Custom styles
+└── requirements.txt            # Python dependencies
+```
+
+### Tech Stack
+
+- **Streamlit** — UI framework
+- **requests** — HTTP client for backend APIs
+- **plotly** — Interactive charts (radar, bar, pie, line, gauge)
+- **pandas** — Data manipulation
 
 ## 🏆 Kaggle Capstone
 

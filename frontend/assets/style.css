@@ -1,0 +1,119 @@
+/* Main App Styles */
+.stApp {
+    background-color: #F8FAFC;
+}
+
+/* Override Streamlit defaults */
+.stButton > button {
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.2s;
+}
+
+.stButton > button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+}
+
+.stTextInput > div > div > input {
+    border-radius: 8px;
+    border: 1px solid #E2E8F0;
+    padding: 0.75rem 1rem;
+}
+
+.stTextInput > div > div > input:focus {
+    border-color: #6366F1;
+    box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+}
+
+/* Card styling */
+div[data-testid="stCard"] {
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: #F1F5F9;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #CBD5E1;
+    border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #94A3B8;
+}
+
+/* Sidebar */
+section[data-testid="stSidebar"] {
+    background-color: #1E293B;
+}
+
+section[data-testid="stSidebar"] .stButton button {
+    background: transparent;
+    color: #CBD5E1;
+    border: none;
+    text-align: left;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-weight: 500;
+}
+
+section[data-testid="stSidebar"] .stButton button:hover {
+    background: #334155;
+    color: #F8FAFC;
+}
+
+section[data-testid="stSidebar"] .stButton button[kind="primary"] {
+    background: #6366F1;
+    color: white;
+}
+
+/* Tabs styling */
+.stTabs [data-baseweb="tab-list"] {
+    gap: 0;
+    background: #F1F5F9;
+    border-radius: 8px;
+    padding: 0.25rem;
+}
+
+.stTabs [data-baseweb="tab"] {
+    border-radius: 6px;
+    padding: 0.5rem 1rem;
+    font-weight: 500;
+}
+
+.stTabs [data-baseweb="tab"][aria-selected="true"] {
+    background: white;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+/* Alert styling */
+div[data-testid="stAlert"] {
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+}
+
+/* Spinner */
+.stSpinner {
+    text-align: center;
+}
+
+/* File uploader */
+div[data-testid="stFileUploader"] {
+    border: 2px dashed #E2E8F0;
+    border-radius: 12px;
+    padding: 2rem;
+    text-align: center;
+}
+
+div[data-testid="stFileUploader"]:hover {
+    border-color: #6366F1;
+}

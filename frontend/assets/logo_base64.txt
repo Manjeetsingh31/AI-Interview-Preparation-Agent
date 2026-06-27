@@ -1,0 +1,2 @@
+Logo placeholder - replace with actual logo image.
+The application uses emoji icons instead of a logo image.
