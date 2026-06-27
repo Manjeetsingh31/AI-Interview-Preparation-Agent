@@ -124,6 +124,23 @@ from backend.app.schemas.study_plan_ai import (
     StudyPlanGenerateRequest,
     StudyPlanProgressUpdateRequest,
 )
+from backend.app.schemas.dashboard_analytics import (
+    ResumeAnalytics,
+    ATSAnalytics,
+    InterviewAnalytics,
+    EvaluationAnalytics,
+    StudyAnalytics,
+    SkillAnalytics,
+    TimelineAnalytics,
+    ProgressAnalytics,
+    DashboardSummary,
+    DashboardStatistics,
+    DashboardResponse,
+    DashboardAnalyticsBase,
+    DashboardAnalyticsCreate,
+    DashboardAnalyticsUpdate,
+    DashboardAnalyticsResponse,
+)
 
 __all__ = [
     "UserBase",
@@ -224,4 +241,19 @@ __all__ = [
     "StudyPlanDashboard",
     "StudyPlanGenerateRequest",
     "StudyPlanProgressUpdateRequest",
+    "ResumeAnalytics",
+    "ATSAnalytics",
+    "InterviewAnalytics",
+    "EvaluationAnalytics",
+    "StudyAnalytics",
+    "SkillAnalytics",
+    "TimelineAnalytics",
+    "ProgressAnalytics",
+    "DashboardSummary",
+    "DashboardStatistics",
+    "DashboardResponse",
+    "DashboardAnalyticsBase",
+    "DashboardAnalyticsCreate",
+    "DashboardAnalyticsUpdate",
+    "DashboardAnalyticsResponse",
 ]
