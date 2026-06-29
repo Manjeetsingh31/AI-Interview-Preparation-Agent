@@ -35,12 +35,15 @@ Design decisions
 
 import json
 import logging
+from tenacity import retry, stop_after_attempt, wait_exponential
 from typing import List, Optional
+
 
 from google.adk import Runner
 from google.adk.agents import Agent
 from google.adk.sessions import InMemorySessionService
 
+from backend.app.core.config import settings
 from backend.app.schemas.interview_turn import InterviewAgentTurn
 
 logger = logging.getLogger(__name__)
@@ -121,7 +124,7 @@ _session_service = InMemorySessionService()
 
 _agent = Agent(
     name=_AGENT_NAME,
-    model="gemini-2.5-flash",
+    model=settings.GEMINI_MODEL,
     instruction=_SYSTEM_INSTRUCTION,
     output_schema=InterviewAgentTurn,
     generate_content_config={
@@ -167,6 +170,17 @@ class InterviewAgent:
 
     def __init__(self) -> None:
         self.logger = logging.getLogger(f"{__name__}.InterviewAgent")
+    @retry(
+        stop=stop_after_attempt(5),
+        wait=wait_exponential(multiplier=2),
+        reraise=True,
+    )
+    async def _run_with_retry(self, prompt: str):
+        return await _runner.run_debug(
+            user_messages=[prompt],
+            user_id=_USER_ID,
+            session_id=_SESSION_ID,
+        )
 
     async def next_turn(
         self,
@@ -237,15 +251,11 @@ class InterviewAgent:
 
         # --- Call the ADK agent ---
         try:
-            events = await _runner.run_debug(
-                user_messages=[prompt],
-                user_id=_USER_ID,
-                session_id=_SESSION_ID,
-            )
+            events = await self._run_with_retry(prompt)
         except Exception as exc:
-            self.logger.error("Gemini timeout / API failure: %s", exc)
+            self.logger.exception("Gemini API failed after retries")
             raise InterviewAgentError(
-                f"ADK interview agent failed to produce a response: {exc}"
+                "Interview service is temporarily unavailable. Please try again in a few minutes."
             ) from exc
 
         # --- Extract structured response ---
@@ -271,12 +281,15 @@ class InterviewAgent:
                                 parsed.difficulty,
                                 parsed.is_final,
                             )
-                        except (json.JSONDecodeError, Exception) as exc:
-                            self.logger.error(
-                                "Malformed JSON from Gemini: %s", exc
-                            )
+                        except json.JSONDecodeError as exc:
+                            self.logger.error("Malformed JSON from Gemini: %s", exc)
                             raise InterviewAgentError(
                                 f"Failed to parse Gemini response: {exc}"
+                            ) from exc
+                        except Exception as exc:
+                            self.logger.exception("Unexpected error while parsing Gemini response")
+                            raise InterviewAgentError(
+                                "Unexpected error while processing the Gemini response."
                             ) from exc
 
         if parsed is None:

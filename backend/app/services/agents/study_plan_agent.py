@@ -537,14 +537,11 @@ async def _run_adk_agent(
         session_service=session_service,
     )
 
-    events = []
-    async for event in runner.run_debug(
+    events = await runner.run_debug(
+        user_messages=[context],
+        user_id="study_plan_user",
         session_id="study_plan_session",
-        user_content=context,
-    ):
-        events.append(event)
-        if event.is_final_response():
-            break
+    )
 
     if not events:
         raise RuntimeError("Study Plan Agent returned no events")

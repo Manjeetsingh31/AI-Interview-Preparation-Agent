@@ -1,4 +1,4 @@
-﻿"""Mock Interview Multi-Agent System API router.
+"""Mock Interview Multi-Agent System API router.
 
 Provides endpoints for the full interview lifecycle:
 
@@ -26,6 +26,10 @@ from backend.app.models.models import InterviewSession
 from backend.app.models.resume_analysis_adk import ResumeAnalysisADK
 from backend.app.models.ats_score import AtsScore
 from backend.app.models.interview_question import InterviewQuestion
+
+from backend.app.crud.crud_interview_session import interview_session_crud
+from backend.app.crud.crud_interview_turn import interview_turn_crud
+from backend.app.schemas.interview_session import InterviewSessionResponse
 from backend.app.schemas.interview_turn import (
     InterviewAgentTurn,
     InterviewTurnCreate,
@@ -38,7 +42,6 @@ from backend.app.schemas.interview_turn import (
     InterviewSessionSummary,
     InterviewTurnConversation,
 )
-from backend.app.crud.crud_interview_turn import interview_turn_crud
 from backend.app.services.agents.interview_agent import (
     InterviewAgent,
     InterviewAgentError,
@@ -202,7 +205,7 @@ async def start_interview(
         tags=turn.tags,
         expected_answer=turn.expected_answer if turn.expected_answer else None,
         evaluation=turn.evaluation if turn.evaluation else None,
-        score=turn.score if turn.score else None,
+        score=turn.score,
     )
     interview_turn_crud.create(db=db, obj_in=turn_record)
 
@@ -280,7 +283,11 @@ async def submit_answer(
         db=db, session_id=request.session_id
     )
 
-    total_questions = 10
+    total_questions = (
+        request.total_questions
+        if request.total_questions is not None
+        else 10
+    )
     next_q_no = len(previous_turns) + 1
 
     turn_dicts = []
@@ -324,7 +331,7 @@ async def submit_answer(
         turn_id=latest_turn.id,
         candidate_answer=request.answer,
         evaluation=turn.evaluation if turn.evaluation else None,
-        score=turn.score if turn.score else None,
+        score=turn.score,
         follow_up=turn.follow_up if turn.follow_up else None,
         response_time=request.response_time,
     )
@@ -430,10 +437,39 @@ async def end_interview(
 
 
 @router.get(
+    "/history",
+    response_model=list[InterviewTurnResponse],
+    summary="List interview turn history for the current user",
+)
+def get_interview_history(
+    db: Session = Depends(get_db),
+    user_id: str = Depends(_get_current_user_id),
+    skip: int = 0,
+    limit: int = 100,
+) -> list:
+    turns = interview_turn_crud.get_by_user(db=db, user_id=user_id, skip=skip, limit=limit)
+    return [_turn_to_response(t) for t in turns]
+
+@router.get(
+    "/sessions",
+    response_model=list[InterviewSessionResponse],
+    summary="List interview sessions",
+)
+def get_interview_sessions(
+    db: Session = Depends(get_db),
+    user_id: str = Depends(_get_current_user_id),
+):
+    sessions = interview_session_crud.get_by_user(
+        db=db,
+        user_id=user_id,
+    )
+    return sessions
+@router.get(
     "/{session_id}",
     response_model=InterviewTurnConversation,
     summary="Get all turns for a session",
 )
+
 def get_session_turns(
     session_id: str,
     db: Session = Depends(get_db),
@@ -456,21 +492,6 @@ def get_session_turns(
         session_id=session_id,
         turns=[_turn_to_response(t) for t in turns],
     )
-
-
-@router.get(
-    "/history",
-    response_model=list[InterviewTurnResponse],
-    summary="List interview turn history for the current user",
-)
-def get_interview_history(
-    db: Session = Depends(get_db),
-    user_id: str = Depends(_get_current_user_id),
-    skip: int = 0,
-    limit: int = 100,
-) -> list:
-    turns = interview_turn_crud.get_by_user(db=db, user_id=user_id, skip=skip, limit=limit)
-    return [_turn_to_response(t) for t in turns]
 
 
 @router.get(

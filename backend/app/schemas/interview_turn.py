@@ -223,6 +223,9 @@ class InterviewAnswerRequest(BaseModel):
     response_time: Optional[int] = Field(
         None, description="Time taken to answer in seconds",
     )
+    total_questions: Optional[int] = Field(
+        None, ge=1, le=50, description="Total questions configured for this session",
+    )
 
 
 class InterviewEndRequest(BaseModel):

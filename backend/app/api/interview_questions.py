@@ -316,13 +316,7 @@ def get_questions_by_analysis(
         resume_analysis_id=resume_analysis_id,
     )
     if not questions:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=(
-                f"No questions found for analysis "
-                f"{resume_analysis_id}."
-            ),
-        )
+        return []
     return [
         InterviewQuestionResponse(
             id=q.id,

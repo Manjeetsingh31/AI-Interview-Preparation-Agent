@@ -145,13 +145,13 @@ class CRUDInterviewEvaluation(
             return {}
 
         return {
-            "average_overall_score": float(result.avg_overall) if result.avg_overall else None,
-            "average_technical_score": float(result.avg_technical) if result.avg_technical else None,
-            "average_communication_score": float(result.avg_communication) if result.avg_communication else None,
-            "average_problem_solving_score": float(result.avg_problem_solving) if result.avg_problem_solving else None,
-            "average_confidence_score": float(result.avg_confidence) if result.avg_confidence else None,
-            "average_behavioral_score": float(result.avg_behavioral) if result.avg_behavioral else None,
-            "average_coding_score": float(result.avg_coding) if result.avg_coding else None,
+            "average_overall_score": float(result.avg_overall) if result.avg_overall is not None else None,
+            "average_technical_score": float(result.avg_technical) if result.avg_technical is not None else None,
+            "average_communication_score": float(result.avg_communication) if result.avg_communication is not None else None,
+            "average_problem_solving_score": float(result.avg_problem_solving) if result.avg_problem_solving is not None else None,
+            "average_confidence_score": float(result.avg_confidence) if result.avg_confidence is not None else None,
+            "average_behavioral_score": float(result.avg_behavioral) if result.avg_behavioral is not None else None,
+            "average_coding_score": float(result.avg_coding) if result.avg_coding is not None else None,
         }
 
     def common_items(

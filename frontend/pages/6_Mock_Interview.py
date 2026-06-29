@@ -66,6 +66,7 @@ if not st.session_state.interview_active:
                         st.session_state.interview_questions = [result]
                         st.session_state.interview_history = []
                         st.session_state.interview_scores = []
+                        st.session_state.interview_total_questions = num_q
                         st.session_state.interview_start_time = time.time()
                         st.rerun()
         st.markdown("</div>", unsafe_allow_html=True)
@@ -144,7 +145,10 @@ else:
                 end_early = st.form_submit_button("End Interview Early", use_container_width=True)
             if submitted:
                 if answer.strip():
-                    result = api.submit_answer(session_id, answer)
+                    result = api.submit_answer(
+                        session_id, answer,
+                        total_questions=st.session_state.get("interview_total_questions"),
+                    )
                     if result:
                         st.session_state.current_question_idx = result.get("question_number", q_no + 1)
                         st.session_state.interview_questions.append(result)

@@ -155,11 +155,11 @@ def _build_evaluation_context(
     context_parts.append("## Transcript (Questions & Answers)")
     context_parts.append("")
 
-    for i, (turn, question) in enumerate(zip(turns, questions), 1):
-        context_parts.append(f"### Q{i}: {question.question_text or 'N/A'}")
-        context_parts.append(f"- Category: {question.category or 'General'}")
-        context_parts.append(f"- Difficulty: {question.difficulty_level or 'Medium'}")
-        context_parts.append(f"- Answer: {turn.user_answer or 'No answer provided'}")
+    for i, turn in enumerate(turns, 1):
+        context_parts.append(f"### Q{i}: {turn.question or 'N/A'}")
+        context_parts.append(f"- Category: {turn.category or 'General'}")
+        context_parts.append(f"- Difficulty: {turn.difficulty or 'Medium'}")
+        context_parts.append(f"- Answer: {turn.candidate_answer or 'No answer provided'}")
         context_parts.append(f"- Score: {turn.score or 0}/10")
         context_parts.append(f"- Evaluation: {turn.evaluation or 'Not evaluated'}")
         context_parts.append("")
@@ -322,18 +322,7 @@ async def run_evaluation_agent(
         .all()
     )
 
-    question_ids = [t.question_id for t in turns if t.question_id]
     questions = []
-    if question_ids:
-        questions = (
-            db.query(Question)
-            .filter(Question.id.in_(question_ids))
-            .all()
-        )
-        questions.sort(
-            key=lambda q: question_ids.index(q.id)
-        )
-
     resume_analysis_data = None
     resume_analysis = (
         db.query(ResumeAnalysis)
@@ -343,14 +332,14 @@ async def run_evaluation_agent(
     )
     if resume_analysis:
         resume_analysis_data = {
-            "total_score": resume_analysis.total_score,
-            "skills_match_score": resume_analysis.skills_match_score,
-            "experience_score": resume_analysis.experience_score,
-            "education_score": resume_analysis.education_score,
-            "matched_skills": resume_analysis.matched_skills,
-            "missing_skills": resume_analysis.missing_skills,
-            "ats_friendly": resume_analysis.ats_friendly,
-            "recommendations": resume_analysis.recommendations,
+            "total_score": resume_analysis.ats_score or 0,
+            "skills_match_score": resume_analysis.ats_score or 0,
+            "experience_score": 0,
+            "education_score": 0,
+            "matched_skills": resume_analysis.skills or [],
+            "missing_skills": resume_analysis.missing_skills or [],
+            "ats_friendly": False,
+            "recommendations": resume_analysis.recommendations or [],
         }
 
     ats_score_data = None
@@ -362,12 +351,18 @@ async def run_evaluation_agent(
     )
     if ats_record:
         ats_score_data = {
-            "ats_score": ats_record.ats_score,
-            "keyword_match_score": ats_record.keyword_match_score,
-            "section_score": ats_record.section_score,
-            "formatting_score": ats_record.formatting_score,
-            "matched_keywords": ats_record.matched_keywords,
+            "overall_score": ats_record.overall_score,
+            "strengths": ats_record.strengths,
+            "weaknesses": ats_record.weaknesses,
             "missing_keywords": ats_record.missing_keywords,
+            "resume_structure_score": ats_record.resume_structure_score,
+            "grammar_score": ats_record.grammar_score,
+            "section_scores": ats_record.section_scores,
+            "project_quality_score": ats_record.project_quality_score,
+            "education_score": ats_record.education_score,
+            "experience_score": ats_record.experience_score,
+            "certification_score": ats_record.certification_score,
+            "improvement_suggestions": ats_record.improvement_suggestions,
         }
 
     context = _build_evaluation_context(
@@ -383,7 +378,18 @@ async def run_evaluation_agent(
         try:
             result = await _run_adk_agent(agent, context)
         except Exception as e:
-            logger.error("ADK agent failed, using fallback: %s", e)
+            exc_type = type(e).__name__
+            http_status = getattr(e, "code", None)
+            if http_status is None:
+                cause = getattr(e, "__cause__", None)
+                http_status = getattr(cause, "code", None) if cause is not None else None
+            logger.error(
+                "ADK agent failed — exception=%s, http_status=%s, message=%s. "
+                "Falling back to heuristic evaluation.",
+                exc_type,
+                http_status if http_status is not None else "N/A",
+                str(e),
+            )
             result = _fallback_evaluation(session, turns)
     else:
         logger.info("ADK agent not available, using fallback evaluation")
@@ -448,14 +454,11 @@ async def _run_adk_agent(
         session_service=session_service,
     )
 
-    events = []
-    async for event in runner.run_debug(
+    events = await runner.run_debug(
+        user_messages=[context],
+        user_id="evaluation_user",
         session_id="evaluation_session",
-        user_content=context,
-    ):
-        events.append(event)
-        if event.is_final_response():
-            break
+    )
 
     if not events:
         raise RuntimeError("Evaluation Agent returned no events")

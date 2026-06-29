@@ -21,13 +21,41 @@ tab1, tab2, tab3 = st.tabs(["Generate Evaluation", "View Evaluations", "Analytic
 with tab1:
     st.markdown("<div class='card'>", unsafe_allow_html=True)
     render_section_header("Generate Evaluation", "🆕")
-    session_id = st.text_input("Interview Session ID", placeholder="Enter the session ID to evaluate", key="eval_session_id")
-    if st.button("Generate Evaluation", type="primary", use_container_width=True) and session_id:
-        result = api.generate_evaluation(session_id)
-        if result:
-            st.success("Evaluation generated successfully!")
-            st.session_state.latest_evaluation = result
-            st.rerun()
+
+    history = api.get_interview_sessions()
+
+    session_options = {}
+
+    if history:
+        for item in history:
+            sid = item.get("id")
+            if sid:
+                session_options[f"{sid[:8]}..."] = sid
+
+        selected = st.selectbox(
+            "Select Interview Session",
+            options=list(session_options.keys())
+        )
+
+        session_id = session_options[selected]
+
+        st.caption(f"Selected Session ID: {session_id}")
+
+        if st.button(
+            "Generate Evaluation",
+            type="primary",
+            use_container_width=True
+        ):
+            result = api.generate_evaluation(session_id)
+
+            if result:
+                st.success("Evaluation generated successfully!")
+                st.session_state.latest_evaluation = result
+                st.rerun()
+
+    else:
+        st.warning("No completed interview sessions found.")
+
     st.markdown("</div>", unsafe_allow_html=True)
 
 with tab2:

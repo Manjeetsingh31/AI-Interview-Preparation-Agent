@@ -1,4 +1,4 @@
-from pydantic import BaseModel, EmailStr, Field
+from pydantic import BaseModel, EmailStr, Field, ConfigDict
 from datetime import datetime
 from typing import List, Optional, Dict, Any
 
@@ -21,8 +21,7 @@ class UserOut(BaseModel):
     email: EmailStr
     created_at: datetime
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 # Resume Schemas
 class ResumeOut(BaseModel):
@@ -31,8 +30,7 @@ class ResumeOut(BaseModel):
     parsed_data: Optional[Dict[str, Any]] = None
     uploaded_at: datetime
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 # Transcript Schemas
 class TranscriptCreate(BaseModel):
@@ -44,9 +42,8 @@ class TranscriptOut(BaseModel):
     sender: str
     message: str
     timestamp: datetime
+    model_config = ConfigDict(from_attributes=True)
 
-    class Config:
-        from_attributes = True
 
 # Evaluation Schemas
 class EvaluationOut(BaseModel):
@@ -58,8 +55,7 @@ class EvaluationOut(BaseModel):
     recommendations: List[str]
     created_at: datetime
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 # Session Schemas
 class SessionCreate(BaseModel):
@@ -77,15 +73,11 @@ class SessionOut(BaseModel):
     created_at: datetime
     completed_at: Optional[datetime] = None
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 class SessionDetailOut(SessionOut):
     transcripts: List[TranscriptOut] = []
     evaluation: Optional[EvaluationOut] = None
-
-    class Config:
-        from_attributes = True
 
 # Chat Interactive Flow
 class ChatTurnRequest(BaseModel):

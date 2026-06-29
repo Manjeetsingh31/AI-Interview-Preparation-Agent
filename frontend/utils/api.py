@@ -121,6 +121,9 @@ class APIClient:
 
     def get_ats_history(self):
         return self._request("get", "/api/ats/history")
+    
+    def get_interview_sessions(self):
+        return self._request("get", "/api/interview/sessions")
 
     def get_ats_score(self, ats_id):
         return self._request("get", f"/api/ats/{ats_id}")
@@ -153,11 +156,12 @@ class APIClient:
             "number_of_questions": number_of_questions,
         })
 
-    def submit_answer(self, session_id, answer, response_time=None):
+    def submit_answer(self, session_id, answer, response_time=None, total_questions=None):
         return self._request("post", "/api/interview/answer", json={
             "session_id": session_id,
             "answer": answer,
             "response_time": response_time,
+            "total_questions": total_questions,
         })
 
     def end_interview(self, session_id):

@@ -1,6 +1,5 @@
 from pathlib import Path
 import streamlit as st
-from streamlit.runtime.scriptrunner import get_script_run_ctx
 from utils.constants import PAGE_ICONS, APP_NAME, APP_ICON
 from utils.session import logout
 
@@ -18,13 +17,10 @@ PAGE_PATHS = {
 
 
 def _current_page_name():
-    ctx = get_script_run_ctx()
-    if ctx:
-        stem = Path(ctx.script_path).stem
-        for name, path in PAGE_PATHS.items():
-            if Path(path).stem == stem:
-                return name
-    return None
+    try:
+        return st.session_state.get("current_page", "Dashboard")
+    except Exception:
+        return "Dashboard"
 
 
 def render_sidebar():
@@ -46,7 +42,9 @@ def render_sidebar():
                 use_container_width=True,
                 type="primary" if active else "secondary",
             ):
+                st.session_state["current_page"] = page
                 st.switch_page(PAGE_PATHS[page])
+
 
         st.markdown("<hr style='border-color: #334455;'>", unsafe_allow_html=True)
 
