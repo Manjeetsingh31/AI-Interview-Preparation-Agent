@@ -19,13 +19,13 @@
 
 ---
 
-## 🎯 Live Demo
+## 🌐 Live Demo
 
-| Resource | URL |
-|----------|-----|
-| Frontend | `https://your-frontend-url.streamlit.app` |
-| Backend API | `https://your-backend-url.onrender.com` |
-| Demo Video | `https://youtube.com/watch?v=your-demo-video` |
+| Service | Link |
+|---------|------|
+| 🚀 Backend API | https://ai-interview-preparation-agent.onrender.com |
+| 📚 API Documentation (Swagger UI) | https://ai-interview-preparation-agent.onrender.com/docs |
+| ❤️ Health Check | https://ai-interview-preparation-agent.onrender.com/health |
 
 ---
 
