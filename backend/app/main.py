@@ -50,6 +50,23 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Root and Health endpoints
+@app.get("/")
+def root():
+    return {
+        "status": "success",
+        "message": "AI Interview Preparation Agent API is running 🚀",
+        "docs": "/docs",
+        "redoc": "/redoc",
+        "health": "/health"
+    }
+
+@app.get("/health")
+def health():
+    return {
+        "status": "healthy"
+    }
+
 # Initialize Database tables
 init_db()
 
