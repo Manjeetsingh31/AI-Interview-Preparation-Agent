@@ -1,6 +1,6 @@
 import os
 
-API_BASE_URL = os.getenv("API_BASE_URL", "http://localhost:8000")
+API_BASE_URL = os.getenv("API_BASE_URL", "https://ai-interview-preparation-agent.onrender.com")
 
 APP_NAME = "AI Interview Preparation Agent"
 APP_ICON = "🤖"
