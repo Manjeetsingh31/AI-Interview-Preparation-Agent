@@ -5,7 +5,7 @@ from utils.constants import THEME
 def load_css():
     css = """
     <style>
-        .stApp { background-color: #F8FAFC; }
+        .stApp { background-color: #F8FAFC; color: #1E293B; }
         .main-header { font-size: 2rem; font-weight: 700; color: #1E293B; margin-bottom: 1rem; }
         .sub-header { font-size: 1.3rem; font-weight: 600; color: #334155; margin-bottom: 0.75rem; }
         .card { background: #FFFFFF; border-radius: 12px; padding: 1.5rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 1rem; border: 1px solid #E2E8F0; }
@@ -30,6 +30,14 @@ def load_css():
         .progress-bar { height: 8px; background: #E2E8F0; border-radius: 999px; overflow: hidden; }
         .progress-fill { height: 100%; background: linear-gradient(90deg, #6366F1, #8B5CF6); border-radius: 999px; transition: width 0.5s; }
         .score-ring { width: 120px; height: 120px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+
+        /* Streamlit Cloud: ensure text visible on light bg */
+        [data-testid="stMarkdownContainer"], .stMarkdown, p, li { color: #1E293B; }
+        label, .st-bb, .st-at { color: #1E293B !important; }
+        [data-testid="stMetricLabel"], [data-testid="stMetricValue"] { color: #1E293B !important; }
+        .stCaption { color: #475569; }
+        [data-testid="stAlert"] { color: #1E293B; }
+        .st-bw, .st-bv { color: #1E293B; }
     </style>
     """
     st.markdown(css, unsafe_allow_html=True)
