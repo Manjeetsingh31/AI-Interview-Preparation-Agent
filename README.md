@@ -445,7 +445,7 @@ flowchart TD
     M --> K
     N --> K
     O -->|Loop| K
-    O -->|All questions done| P[/api/interview/end]
+    O -->|All questions done| P["/api/interview/end"]
     P --> Q[Interview Evaluation ADK Agent]
     Q -->|6-Dimension Scores| E
     Q --> R[Study Plan ADK Agent]
